@@ -1,6 +1,6 @@
 {
-  "name": "rss",
-  "version": "1.0.0",
+  "name": "rss-reader-soulle",
+  "version": "1.0.1",
   "description": "rss-reader for hexlet",
   "keywords": [
     "hexlet",
@@ -9,7 +9,6 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "prepublishOnly": "npm run build",
     "build": "webpack"
   },
   "author": "",
