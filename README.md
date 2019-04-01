@@ -6,4 +6,4 @@
 
 [![Build Status](https://travis-ci.org/soulle/project-lvl3-s440.svg?branch=master)](https://travis-ci.org/soulle/project-lvl3-s440)
 
-http://rss-reader-soulle.surge.sh/template.html
+http://rss-reader-soulle.surge.sh/
