@@ -1,6 +1,6 @@
 {
   "name": "rss-reader-soulle",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "rss-reader for hexlet",
   "keywords": [
     "hexlet",
@@ -37,6 +37,8 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "jquery": "^3.3.1",
-    "popper.js": "^1.14.7"
+    "melanke-watchjs": "^1.5.0",
+    "popper.js": "^1.14.7",
+    "validator": "^10.11.0"
   }
 }
