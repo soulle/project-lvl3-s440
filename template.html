@@ -12,9 +12,25 @@
           <label for="addAddress">Address</label>
           <input type="text" class="form-control" id="addAddress" placeholder="Enter address">
         </div>
-        <button type="button" class="btn btn-primary btn-lg">Submit</button>
+        <button type="button" class="btn btn-lg btn-primary" disabled>Submit</button>
       </form>
     </div>
+
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status" hidden="true">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+
+    <h3>FEEDS</h3>
+    <div class="feeds-group"></div>
+    <hr>
+
+    <h3>ARTICLES</h3>
+    <div class="articles-group">
+      <!-- <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a> -->
+    </div>
+
     <script crossorigin="anonymous" href="https://polyfill.io/v3/polyfill.min.js"></script>
   </body>
 </html>
