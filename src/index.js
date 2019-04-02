@@ -6,23 +6,26 @@ import { watch } from 'melanke-watchjs';
 const app = () => {
   const state = {
     form: {
-      valid: true,
+      valid: 'neutral',
     },
   };
   const input = document.getElementById('addAddress');
 
   input.addEventListener('keyup', () => {
-    if (input.value === '') {
-      state.form.valid = true;
+    if (input.value.length === 0) {
+      state.form.valid = 'neutral';
+    } else {
+      state.form.valid = isURL(input.value);
     }
-    state.form.valid = isURL(input.value);
   });
 
   watch(state, 'form', () => {
-    if (state.form.valid === false) {
-      input.style.border = 'thick solid red';
-    } else {
+    console.log('STATE', state.form.valid);
+    if (state.form.valid === 'neutral') {
+      console.log('null');
       input.style.border = null;
+    } else {
+      input.style.border = state.form.valid ? 'thick solid green' : 'thick solid red';
     }
   });
 };
