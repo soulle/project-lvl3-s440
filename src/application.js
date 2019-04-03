@@ -5,6 +5,11 @@ import { watch } from 'melanke-watchjs';
 import axios from 'axios';
 import addData from './renderers';
 
+const cors = 'https://cors-anywhere.herokuapp.com/';
+const input = document.getElementById('addAddress');
+const submit = document.querySelector('button');
+const spinner = document.querySelector('.spinner-border');
+
 const app = () => {
   const state = {
     form: {
@@ -16,11 +21,6 @@ const app = () => {
   };
 
   let feeds = [];
-  const cors = 'https://cors-anywhere.herokuapp.com/';
-
-  const input = document.getElementById('addAddress');
-  const submit = document.querySelector('button');
-  const spinner = document.querySelector('.spinner-border');
 
   input.addEventListener('input', (e) => {
     if (input.value.length === 0) {
@@ -29,6 +29,7 @@ const app = () => {
     } else {
       state.form.valid = isURL(input.value) && !feeds.includes(input.value);
       state.current = state.form.valid ? e.target.value : null;
+      console.log('state.current', state.current);
       state.form.submitDisabled = !state.form.valid;
     }
   });
@@ -43,7 +44,10 @@ const app = () => {
       })
       .then(addData)
       .then(() => {
+        state.form.submitDisabled = true;
+        state.form.submitted = false;
         spinner.hidden = true;
+        state.current = null;
       });
   };
 

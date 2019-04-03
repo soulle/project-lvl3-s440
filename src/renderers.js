@@ -26,7 +26,6 @@ const addArticlesPart = (data) => {
 
   items.forEach((item) => {
     const a = document.createElement('a');
-    console.log('item', item.querySelector('link').innerHTML);
     a.setAttribute('href', item.querySelector('link').innerHTML);
     a.classList.add('list-group-item', 'list-group-item-action');
     a.textContent = item.querySelector('title').textContent;
