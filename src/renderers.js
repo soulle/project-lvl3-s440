@@ -4,7 +4,9 @@ export const addArticlesPart = (articles) => {
   const articlesPart = document.querySelector('ul.articles-group');
 
   articles.forEach((item) => {
-    const { articleLink, articleTitle } = item;
+    // console.log('item', item);
+
+    const { articleLink, articleTitle, articleDescription } = item;
 
     const div = document.createElement('div');
     div.classList.add('container');
@@ -19,6 +21,13 @@ export const addArticlesPart = (articles) => {
     button.setAttribute('data-target', '#exampleModal');
     button.classList.add('btn', 'btn-primary');
     button.textContent = 'Description';
+
+    button.addEventListener('click', (e) => {
+      document.getElementById('exampleModalLabel').textContent = articleTitle;
+      document.querySelector('.modal-body').textContent = articleDescription;
+      console.log('current button', e.target);
+      console.log('closest div', e.target.closest('div'));
+    });
 
     articlesPart.append(div);
     div.append(a);

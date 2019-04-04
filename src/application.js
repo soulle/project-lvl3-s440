@@ -18,6 +18,7 @@ const app = () => {
     feedsURL: [],
     feeds: [],
     articles: [],
+    modal: 'closed',
   };
 
   const input = document.getElementById('addAddress');
