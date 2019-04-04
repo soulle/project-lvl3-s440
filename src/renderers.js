@@ -1,13 +1,41 @@
-const addFeedsPart = (data) => {
+export const addArticlesPart = (articles) => {
+  console.log('atticles___', articles);
+  console.log('atticles___', articles.length);
+  const articlesPart = document.querySelector('ul.articles-group');
+
+  articles.forEach((item) => {
+    const { articleLink, articleTitle } = item;
+
+    const div = document.createElement('div');
+    div.classList.add('container');
+
+    const a = document.createElement('a');
+    a.setAttribute('href', articleLink);
+    a.textContent = articleTitle;
+
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-toggle', 'modal');
+    button.setAttribute('data-target', '#exampleModal');
+    button.classList.add('btn', 'btn-primary');
+    button.textContent = 'Description';
+
+    articlesPart.append(div);
+    div.append(a);
+    div.append(button);
+  });
+};
+
+export const addFeedsPart = (feeds) => {
+  console.log('feeds', feeds);
+  console.log('feeds', feeds.length);
+  const [title, description] = feeds;
   const feedsPart = document.querySelector('div.feeds-group');
-
-  const title = data.querySelector('title').textContent;
-  const description = data.querySelector('description').textContent;
-
   const divFeed = document.createElement('div');
-  divFeed.classList.add('d-flex', 'w-100', 'justify-content-between');
+  divFeed.classList.add('container');
+  // 'list-group-item'
 
-  const h = document.createElement('h5');
+  const h = document.createElement('h3');
   h.classList.add('mb-1');
   h.textContent = title;
 
@@ -16,24 +44,6 @@ const addFeedsPart = (data) => {
   p.textContent = description;
 
   divFeed.append(h);
+  divFeed.append(p);
   feedsPart.append(divFeed);
-  feedsPart.append(p);
-};
-
-const addArticlesPart = (data) => {
-  const articlesPart = document.querySelector('div.articles-group');
-  const items = data.querySelectorAll('item');
-
-  items.forEach((item) => {
-    const a = document.createElement('a');
-    a.setAttribute('href', item.querySelector('link').innerHTML);
-    a.classList.add('list-group-item', 'list-group-item-action');
-    a.textContent = item.querySelector('title').textContent;
-    articlesPart.append(a);
-  });
-};
-
-export default (data) => {
-  addFeedsPart(data);
-  addArticlesPart(data);
 };

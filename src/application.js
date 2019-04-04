@@ -3,73 +3,79 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import isURL from 'validator/lib/isURL';
 import { watch } from 'melanke-watchjs';
 import axios from 'axios';
-import addData from './renderers';
-
-const cors = 'https://cors-anywhere.herokuapp.com/';
-const input = document.getElementById('addAddress');
-const submit = document.querySelector('button');
-const spinner = document.querySelector('.spinner-border');
+import parseData from './parser';
+import { addArticlesPart, addFeedsPart } from './renderers';
 
 const app = () => {
   const state = {
     form: {
-      valid: 'neutral',
-      submitDisabled: true,
-      submitted: false,
+      valid: true,
+      submit: 'disabled',
+      request: 'not sent',
     },
-    current: null,
+    spinner: 'off',
+    currentURL: null,
+    feedsURL: [],
+    feeds: [],
+    articles: [],
   };
 
-  let feeds = [];
+  const input = document.getElementById('addAddress');
+  const submit = document.querySelector('button');
+  const spinner = document.querySelector('.spinner-border');
 
-  input.addEventListener('input', (e) => {
+  const isValid = value => isURL(value) && !state.feedsURL.includes(value);
+
+  input.addEventListener('input', () => {
     if (input.value.length === 0) {
-      state.form.valid = 'neutral';
-      state.form.submitDisabled = true;
+      state.form.valid = true;
+      state.form.submit = 'disabled';
     } else {
-      state.form.valid = isURL(input.value) && !feeds.includes(input.value);
-      state.current = state.form.valid ? e.target.value : null;
-      console.log('state.current', state.current);
-      state.form.submitDisabled = !state.form.valid;
+      state.form.valid = isValid(input.value);
+      state.currentURL = input.value;
+      state.form.submit = state.form.valid ? 'enabled' : 'disabled';
     }
   });
 
-  const getData = () => {
-    const url = new URL(`${cors}${state.current}`);
-    const parser = new DOMParser();
+  const addData = () => {
+    const cors = 'https://cors-anywhere.herokuapp.com/';
+    const url = new URL(`${cors}${state.currentURL}`);
     axios.get(url)
       .then((response) => {
-        const parsedData = parser.parseFromString(response.data, 'application/xml');
-        return parsedData;
+        const { feedTitle, feedDescription, articles } = parseData(response.data);
+        state.feeds = [feedTitle, feedDescription];
+        state.articles = [...articles];
+        console.log('STATE axios', state);
       })
-      .then(addData)
-      .then(() => {
-        state.form.submitDisabled = true;
-        state.form.submitted = false;
-        spinner.hidden = true;
-        state.current = null;
-      });
+      .then(console.log('STATE axios done', state));
   };
 
   submit.addEventListener('click', () => {
-    spinner.hidden = false;
-    state.form.submitted = true;
+    state.spinner = 'on';
+    state.feedsURL.push(state.currentURL);
+    state.form.submit = 'disabled';
+    addData();
+    state.form.request = 'sent';
+  });
+
+  watch(state, 'spinner', () => {
+    spinner.hidden = state.spinner === 'off';
+  });
+
+  watch(state.form, 'request', () => {
+    if (state.form.request === 'sent') {
+      input.value = '';
+      addArticlesPart(state.articles);
+      addFeedsPart(state.feeds);
+    }
   });
 
   watch(state, 'form', () => {
-    submit.disabled = state.form.submitDisabled;
+    submit.disabled = state.form.submit === 'disabled';
     if (state.form.valid === false) {
       input.style.border = 'thick solid red';
     } else {
       input.style.border = null;
-    }
-  });
-
-  watch(state.form, 'submitted', () => {
-    if (state.form.submitted === true) {
-      input.value = '';
-      feeds = [...feeds, state.current];
-      getData();
     }
   });
 };
