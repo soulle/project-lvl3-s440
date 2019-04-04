@@ -66,9 +66,16 @@ const app = () => {
     }
   });
 
+  const makeInitial = () => {
+    state.form.request = 'not sent';
+    state.spinner = 'off';
+    state.currentURL = null;
+  };
+
   watch(state, 'feeds', () => {
     addArticlesPart(state.articles);
     addFeedsPart(state.feeds);
+    makeInitial();
   });
 
   watch(state, 'form', () => {
