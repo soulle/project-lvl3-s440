@@ -1,6 +1,6 @@
 export const addArticlesPart = (articles) => {
-  console.log('atticles___', articles);
-  console.log('atticles___', articles.length);
+  console.log('atticles part', articles);
+  console.log('atticles part', articles.length);
   const articlesPart = document.querySelector('ul.articles-group');
 
   articles.forEach((item) => {
@@ -27,8 +27,8 @@ export const addArticlesPart = (articles) => {
 };
 
 export const addFeedsPart = (feeds) => {
-  console.log('feeds', feeds);
-  console.log('feeds', feeds.length);
+  console.log('feeds part', feeds);
+  console.log('feeds part', feeds.length);
   const [title, description] = feeds;
   const feedsPart = document.querySelector('div.feeds-group');
   const divFeed = document.createElement('div');

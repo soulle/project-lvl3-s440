@@ -45,17 +45,15 @@ const app = () => {
         const { feedTitle, feedDescription, articles } = parseData(response.data);
         state.feeds = [feedTitle, feedDescription];
         state.articles = [...articles];
-        console.log('STATE axios', state);
-      })
-      .then(console.log('STATE axios done', state));
+      });
   };
 
   submit.addEventListener('click', () => {
     state.spinner = 'on';
     state.feedsURL.push(state.currentURL);
     state.form.submit = 'disabled';
-    addData();
     state.form.request = 'sent';
+    addData();
   });
 
   watch(state, 'spinner', () => {
@@ -65,9 +63,12 @@ const app = () => {
   watch(state.form, 'request', () => {
     if (state.form.request === 'sent') {
       input.value = '';
-      addArticlesPart(state.articles);
-      addFeedsPart(state.feeds);
     }
+  });
+
+  watch(state, 'feeds', () => {
+    addArticlesPart(state.articles);
+    addFeedsPart(state.feeds);
   });
 
   watch(state, 'form', () => {
