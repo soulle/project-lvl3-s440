@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import isURL from 'validator/lib/isURL';
 import { watch } from 'melanke-watchjs';
 import axios from 'axios';
+import $ from 'jquery';
 import parseData from './parser';
 import { addArticlesPart, addFeedsPart } from './renderers';
 
@@ -86,6 +87,17 @@ const app = () => {
     } else {
       input.style.border = null;
     }
+  });
+
+  $('#exampleModal').on('show.bs.modal', function f(event) {
+    const button = $(event.relatedTarget); // Button that triggered the modal
+    const recipient = button.data('description'); // Extract info from data-* attributes
+    console.log('recipient', recipient);
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    const modal = $(this);
+    modal.find('.modal-title').text('Description');
+    modal.find('.modal-body').html(`${recipient}`);
   });
 };
 

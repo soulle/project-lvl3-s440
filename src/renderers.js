@@ -19,15 +19,9 @@ export const addArticlesPart = (articles) => {
     button.setAttribute('type', 'button');
     button.setAttribute('data-toggle', 'modal');
     button.setAttribute('data-target', '#exampleModal');
+    button.setAttribute('data-description', articleDescription);
     button.classList.add('btn', 'btn-primary');
     button.textContent = 'Description';
-
-    button.addEventListener('click', (e) => {
-      document.getElementById('exampleModalLabel').textContent = articleTitle;
-      document.querySelector('.modal-body').textContent = articleDescription;
-      console.log('current button', e.target);
-      console.log('closest div', e.target.closest('div'));
-    });
 
     articlesPart.append(div);
     div.append(a);
