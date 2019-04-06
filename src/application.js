@@ -14,13 +14,17 @@ const app = () => {
     feedsURL: [],
     feeds: [],
     articles: [],
-    modal: 'closed',
+    modal: {
+      status: 'inactive',
+      data: {},
+    },
   };
 
   const input = document.getElementById('addAddress');
   const submit = document.querySelector('button');
   const spinner = document.querySelector('.spinner-border');
   const feedback = document.querySelector('.invalid-feedback');
+  const modal = document.getElementById('exampleModal');
   const isValid = value => isURL(value) && !state.feedsURL.includes(value);
   const cors = 'https://cors-anywhere.herokuapp.com/';
 
@@ -77,13 +81,10 @@ const app = () => {
     const url = new URL(`${cors}${state.currentURL}`);
     axios.get(url)
       .then((response) => {
-        console.log('response', response.request);
         const { feedTitle, feedDescription, articles } = parseData(response.data);
-        console.log('parseData(response.data)', parseData(response.data));
 
         state.feeds = [feedTitle, feedDescription];
         state.articles = articles;
-
         state.formStatus = 'empty';
       })
       .catch((error) => {
@@ -95,14 +96,36 @@ const app = () => {
   watch(state, 'feeds', () => {
     renderArticles(state.articles);
     renderFeeds(state.feeds);
+    const buttons = document.querySelectorAll('button[data-target="#exampleModal"]');
+    buttons.forEach(button => button.addEventListener('click', (e) => {
+      const current = e.target;
+      console.log('current', current);
+
+      const title = current.previousElementSibling.textContent;
+      console.log('title', title);
+
+      const description = current.getAttribute('data-description');
+      console.log('description', description);
+
+      state.modal.data = { title, description };
+      state.modal.status = 'active';
+      console.log('state.modal.status', state.modal);
+    }));
   });
 
-  $('#exampleModal').on('show.bs.modal', function f(event) {
-    const button = $(event.relatedTarget);
-    const recipient = button.data('description');
-    const modal = $(this);
-    modal.find('.modal-title').text('Description');
-    modal.find('.modal-body').html(`${recipient}`);
+  watch(state, 'modal', () => {
+    if (state.modal.status === 'active') {
+      console.log('STATE AFTER', state);
+      const { title, description } = state.modal.data;
+      modal.querySelector('.modal-title').textContent = title;
+      modal.querySelector('.modal-body').textContent = description;
+      // modal.find('.modal-body').html(description);
+    }
+  });
+
+  $('#exampleModal').on('hide.bs.modal', () => {
+    state.modal.status = 'inactive';
+    state.modal.data = {};
   });
 };
 

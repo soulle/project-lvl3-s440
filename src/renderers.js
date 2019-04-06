@@ -1,11 +1,7 @@
 export const renderArticles = (articles) => {
-  console.log('atticles part', articles);
-  console.log('atticles part', articles.length);
   const articlesPart = document.querySelector('ul.articles-group');
 
   articles.forEach((item) => {
-    // console.log('item', item);
-
     const { articleLink, articleTitle, articleDescription } = item;
 
     const div = document.createElement('div');
@@ -30,13 +26,10 @@ export const renderArticles = (articles) => {
 };
 
 export const renderFeeds = (feeds) => {
-  console.log('feeds part', feeds);
-  console.log('feeds part', feeds.length);
   const [title, description] = feeds;
   const feedsPart = document.querySelector('div.feeds-group');
   const divFeed = document.createElement('div');
   divFeed.classList.add('container');
-  // 'list-group-item'
 
   const h = document.createElement('h3');
   h.classList.add('mb-1');
