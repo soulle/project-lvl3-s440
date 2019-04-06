@@ -1,4 +1,5 @@
 export const renderArticles = (articles) => {
+  console.log('render!');
   const articlesPart = document.querySelector('ul.articles-group');
 
   articles.forEach((item) => {
