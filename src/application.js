@@ -2,10 +2,10 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import isURL from 'validator/lib/isURL';
 import { watch } from 'melanke-watchjs';
-// import axios from 'axios';
+import axios from 'axios';
 import $ from 'jquery';
-// import parseData from './parser';
-import { addArticlesPart, addFeedsPart } from './renderers';
+import parseData from './parser';
+import { renderArticles, renderFeeds } from './renderers';
 
 const app = () => {
   const state = {
@@ -22,6 +22,7 @@ const app = () => {
   const spinner = document.querySelector('.spinner-border');
   const feedback = document.querySelector('.invalid-feedback');
   const isValid = value => isURL(value) && !state.feedsURL.includes(value);
+  const cors = 'https://cors-anywhere.herokuapp.com/';
 
   const formStatuses = {
     empty: () => {
@@ -48,7 +49,6 @@ const app = () => {
       spinner.hidden = true;
       input.classList.remove('is-valid');
       input.classList.add('is-invalid');
-      feedback.textContent = 'Error';
     },
     loading: () => {
       submit.disabled = true;
@@ -57,7 +57,7 @@ const app = () => {
   };
 
   watch(state, 'formStatus', () => {
-    console.log('!', state.formStatus);
+    console.log('state.formStatus', state.formStatus);
     formStatuses[state.formStatus]();
   });
 
@@ -66,7 +66,6 @@ const app = () => {
       state.formStatus = 'empty';
     } else {
       state.formStatus = isValid(input.value) ? 'valid' : 'invalid';
-      console.log('state.formStatus', state.formStatus);
       state.currentURL = input.value;
     }
   });
@@ -74,28 +73,33 @@ const app = () => {
   submit.addEventListener('click', () => {
     state.feedsURL.push(state.currentURL);
     state.formStatus = 'loading';
+
+    const url = new URL(`${cors}${state.currentURL}`);
+    axios.get(url)
+      .then((response) => {
+        console.log('response', response.request);
+        const { feedTitle, feedDescription, articles } = parseData(response.data);
+        console.log('parseData(response.data)', parseData(response.data));
+
+        state.feeds = [feedTitle, feedDescription];
+        state.articles = articles;
+
+        state.formStatus = 'empty';
+      })
+      .catch((error) => {
+        state.formStatus = 'error';
+        feedback.textContent = error;
+      });
   });
 
-  // const addData = () => {
-  //  const cors = 'https://cors-anywhere.herokuapp.com/';
-  //  const url = new URL(`${cors}${state.currentURL}`);
-  //  axios.get(url)
-  //    .then((response) => {
-  //      const { feedTitle, feedDescription, articles } = parseData(response.data);
-  //      state.feeds = [feedTitle, feedDescription];
-  //      state.articles = [...articles];
-  //    });
-  // };
-
   watch(state, 'feeds', () => {
-    addArticlesPart(state.articles);
-    addFeedsPart(state.feeds);
+    renderArticles(state.articles);
+    renderFeeds(state.feeds);
   });
 
   $('#exampleModal').on('show.bs.modal', function f(event) {
-    const button = $(event.relatedTarget); // Button that triggered the modal
-    const recipient = button.data('description'); // Extract info from data-* attributes
-    console.log('recipient', recipient);
+    const button = $(event.relatedTarget);
+    const recipient = button.data('description');
     const modal = $(this);
     modal.find('.modal-title').text('Description');
     modal.find('.modal-body').html(`${recipient}`);

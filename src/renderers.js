@@ -1,4 +1,4 @@
-export const addArticlesPart = (articles) => {
+export const renderArticles = (articles) => {
   console.log('atticles part', articles);
   console.log('atticles part', articles.length);
   const articlesPart = document.querySelector('ul.articles-group');
@@ -29,7 +29,7 @@ export const addArticlesPart = (articles) => {
   });
 };
 
-export const addFeedsPart = (feeds) => {
+export const renderFeeds = (feeds) => {
   console.log('feeds part', feeds);
   console.log('feeds part', feeds.length);
   const [title, description] = feeds;
