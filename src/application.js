@@ -21,7 +21,9 @@ const app = () => {
   };
 
   const input = document.getElementById('addAddress');
-  const submit = document.querySelector('button');
+  const submit = document.getElementById('submitButton');
+  const inputForm = document.getElementById('inputForm');
+
   const spinner = document.querySelector('.spinner-border');
   const feedback = document.querySelector('.invalid-feedback');
   const modal = document.getElementById('exampleModal');
@@ -60,33 +62,6 @@ const app = () => {
     },
   };
 
-  const update = () => {
-    const promises = state.feedsURL.map(url => axios.get(new URL(`${cors}${url}`)));
-    const promise = Promise.all(promises);
-    return promise.then((responses) => {
-      const current = responses.map((response) => {
-        const { articles } = parseData(response);
-        return articles.map(({ articleLink }) => articleLink);
-      });
-      console.log('current', current);
-
-      const links = state.articles.map(({ articleLink }) => articleLink);
-      console.log('current links', links);
-
-      const neww = current.filter(link => !links.includes(link));
-      console.log('new', neww);
-
-      state.articles.push(...neww);
-      setTimeout(update, 40000);
-    })
-      .catch(() => {
-        // console.log('error', error);
-        setTimeout(update, 40000);
-      });
-  };
-
-  setTimeout(update, 40000);
-
   watch(state, 'formStatus', () => {
     console.log('state.formStatus', state.formStatus);
     formStatuses[state.formStatus]();
@@ -101,7 +76,9 @@ const app = () => {
     }
   });
 
-  submit.addEventListener('click', () => {
+  inputForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
     state.feedsURL.push(state.currentURL);
     state.formStatus = 'loading';
 
