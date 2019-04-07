@@ -12,11 +12,11 @@ const app = () => {
     formStatus: 'empty',
     currentURL: null,
     feedsURL: [],
-    feeds: [],
+    feedTitles: [],
     articles: [],
     modal: {
       status: 'inactive',
-      data: {},
+      description: '',
     },
   };
 
@@ -87,8 +87,9 @@ const app = () => {
       .then((response) => {
         const { feedTitle, feedDescription, articles } = parseData(response.data);
 
-        state.feeds = [feedTitle, feedDescription];
-        state.articles = articles;
+        state.feedTitles = [...state.feedTitles, { feedTitle, feedDescription }];
+        state.articles = [...state.articles, ...articles];
+
         state.formStatus = 'empty';
       })
       .catch((error) => {
@@ -98,38 +99,27 @@ const app = () => {
   });
 
   watch(state, 'articles', () => {
-    console.log('add!');
     renderArticles(state.articles);
   });
 
-  watch(state, 'feeds', () => {
+  watch(state, 'feedTitles', () => {
     renderArticles(state.articles);
-    renderFeeds(state.feeds);
-    const buttons = document.querySelectorAll('button[data-target="#exampleModal"]');
-    buttons.forEach(button => button.addEventListener('click', (e) => {
-      const current = e.target;
-      console.log('current', current);
-
-      const title = current.previousElementSibling.textContent;
-      console.log('title', title);
-
-      const description = current.getAttribute('data-description');
-      console.log('description', description);
-
-      state.modal.data = { title, description };
-      state.modal.status = 'active';
-      console.log('state.modal.status', state.modal);
-    }));
+    renderFeeds(state.feedTitles);
   });
 
   watch(state, 'modal', () => {
-    if (state.modal.status === 'active') {
-      console.log('STATE AFTER', state);
-      const { title, description } = state.modal.data;
-      modal.querySelector('.modal-title').textContent = title;
-      modal.querySelector('.modal-body').textContent = description;
-      // modal.find('.modal-body').html(description);
+    console.log('state modal', state);
+    if (state.modal.status === 'inactive') {
+      return;
     }
+    modal.querySelector('.modal-body').textContent = state.modal.description;
+  });
+
+  $('#exampleModal').on('show.bs.modal', (event) => {
+    const current = $(event.relatedTarget);
+
+    state.modal.description = current.data('description');
+    state.modal.status = 'active';
   });
 
   $('#exampleModal').on('hide.bs.modal', () => {

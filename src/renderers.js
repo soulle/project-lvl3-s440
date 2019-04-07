@@ -1,6 +1,6 @@
 export const renderArticles = (articles) => {
-  console.log('render!');
   const articlesPart = document.querySelector('ul.articles-group');
+  articlesPart.innerHTML = '';
 
   articles.forEach((item) => {
     const { articleLink, articleTitle, articleDescription } = item;
@@ -27,20 +27,24 @@ export const renderArticles = (articles) => {
 };
 
 export const renderFeeds = (feeds) => {
-  const [title, description] = feeds;
   const feedsPart = document.querySelector('div.feeds-group');
-  const divFeed = document.createElement('div');
-  divFeed.classList.add('container');
+  feedsPart.innerHTML = '';
 
-  const h = document.createElement('h3');
-  h.classList.add('mb-1');
-  h.textContent = title;
+  feeds.map(({ feedTitle, feedDescription }) => {
+    const divFeed = document.createElement('div');
+    divFeed.classList.add('container');
 
-  const p = document.createElement('p');
-  p.classList.add('mb-1');
-  p.textContent = description;
+    const h = document.createElement('h3');
+    h.classList.add('mb-1');
+    h.textContent = feedTitle;
 
-  divFeed.append(h);
-  divFeed.append(p);
-  feedsPart.append(divFeed);
+    const p = document.createElement('p');
+    p.classList.add('mb-1');
+    p.textContent = feedDescription;
+
+    divFeed.append(h);
+    divFeed.append(p);
+    feedsPart.append(divFeed);
+    return null;
+  });
 };
