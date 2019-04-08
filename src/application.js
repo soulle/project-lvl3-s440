@@ -61,6 +61,7 @@ const app = () => {
       spinner.hidden = false;
     },
   };
+  console.log('state', state);
 
   watch(state, 'formStatus', () => formStatuses[state.formStatus]());
 
@@ -76,7 +77,6 @@ const app = () => {
   inputForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    state.feedsURL.push(state.currentURL);
     state.formStatus = 'loading';
 
     const url = new URL(`${cors}${state.currentURL}`);
@@ -88,6 +88,7 @@ const app = () => {
         state.articles.push(...articles);
 
         state.formStatus = 'empty';
+        state.feedsURL.push(state.currentURL);
       })
       .catch((error) => {
         state.formStatus = 'error';
