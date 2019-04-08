@@ -62,10 +62,7 @@ const app = () => {
     },
   };
 
-  watch(state, 'formStatus', () => {
-    console.log('state.formStatus', state.formStatus);
-    formStatuses[state.formStatus]();
-  });
+  watch(state, 'formStatus', () => formStatuses[state.formStatus]());
 
   input.addEventListener('input', () => {
     if (input.value === '') {
@@ -99,36 +96,30 @@ const app = () => {
   });
 
   const update = () => {
-    const promises = state.feedsURL.map(url => axios.get(`${cors}${url}`));
+    const promises = state.feedsURL.map(url => axios.get(new URL(`${cors}${url}`)));
     const promise = Promise.all(promises);
 
-    const timer = setTimeout(() => promise.then((responses) => {
-      const newdata = responses.map(response => parseData(response.data));
-      console.log('newdata', newdata);
-
-      const currentArticles = responses.map((response) => {
+    return promise.then((responses) => {
+      const receivedArticles = responses.map((response) => {
         const { articles } = parseData(response.data);
         return articles;
-      });
-      console.log('currentArticles', currentArticles);
+      }).flat();
 
-      const links = state.articles.map(({ articleLink }) => articleLink);
-      console.log('links', links);
+      const currentLinks = state.articles.map(({ articleLink }) => articleLink);
 
-      const neww = currentArticles.filter(({ articleLink }) => !links.includes(articleLink));
-      console.log('new', neww);
+      const newArticles = receivedArticles
+        .filter((article) => {
+          const { articleLink } = article;
+          return !currentLinks.includes(articleLink);
+        });
 
-      state.articles.push(...neww);
-    }), 60000);
-    return timer;
+      state.articles.unshift(...newArticles);
+    }).finally(setTimeout(update, 5000));
   };
 
-  update();
+  setTimeout(update, 5000);
 
-  watch(state, 'articles', () => {
-    console.log('watch!');
-    renderArticles(state.articles);
-  });
+  watch(state, 'articles', () => renderArticles(state.articles));
 
   watch(state, 'feedTitles', () => {
     renderArticles(state.articles);
@@ -136,7 +127,6 @@ const app = () => {
   });
 
   watch(state, 'modal', () => {
-    console.log('state modal', state);
     if (state.modal.status === 'inactive') {
       return;
     }
