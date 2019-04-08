@@ -87,8 +87,8 @@ const app = () => {
       .then((response) => {
         const { feedTitle, feedDescription, articles } = parseData(response.data);
 
-        state.feedTitles = [...state.feedTitles, { feedTitle, feedDescription }];
-        state.articles = [...state.articles, ...articles];
+        state.feedTitles.push({ feedTitle, feedDescription });
+        state.articles.push(...articles);
 
         state.formStatus = 'empty';
       })
@@ -98,7 +98,35 @@ const app = () => {
       });
   });
 
+  const update = () => {
+    const promises = state.feedsURL.map(url => axios.get(`${cors}${url}`));
+    const promise = Promise.all(promises);
+
+    const timer = setTimeout(() => promise.then((responses) => {
+      const newdata = responses.map(response => parseData(response.data));
+      console.log('newdata', newdata);
+
+      const currentArticles = responses.map((response) => {
+        const { articles } = parseData(response.data);
+        return articles;
+      });
+      console.log('currentArticles', currentArticles);
+
+      const links = state.articles.map(({ articleLink }) => articleLink);
+      console.log('links', links);
+
+      const neww = currentArticles.filter(({ articleLink }) => !links.includes(articleLink));
+      console.log('new', neww);
+
+      state.articles.push(...neww);
+    }), 60000);
+    return timer;
+  };
+
+  update();
+
   watch(state, 'articles', () => {
+    console.log('watch!');
     renderArticles(state.articles);
   });
 

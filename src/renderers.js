@@ -1,4 +1,5 @@
 export const renderArticles = (articles) => {
+  console.log('render!');
   const articlesPart = document.querySelector('ul.articles-group');
   articlesPart.innerHTML = '';
 
@@ -30,7 +31,7 @@ export const renderFeeds = (feeds) => {
   const feedsPart = document.querySelector('div.feeds-group');
   feedsPart.innerHTML = '';
 
-  feeds.map(({ feedTitle, feedDescription }) => {
+  feeds.forEach(({ feedTitle, feedDescription }) => {
     const divFeed = document.createElement('div');
     divFeed.classList.add('container');
 
@@ -45,6 +46,5 @@ export const renderFeeds = (feeds) => {
     divFeed.append(h);
     divFeed.append(p);
     feedsPart.append(divFeed);
-    return null;
   });
 };
